@@ -1,0 +1,19 @@
+PODS:
+  - DateTools (1.7.0)
+  - JSQMessagesViewController (7.2.0):
+    - JSQSystemSoundPlayer (~> 2.0.1)
+  - JSQSystemSoundPlayer (2.0.1)
+  - SwiftHTTP (1.0.2)
+
+DEPENDENCIES:
+  - DateTools
+  - JSQMessagesViewController
+  - SwiftHTTP (~> 1.0.0)
+
+SPEC CHECKSUMS:
+  DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
+  JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
+  JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  SwiftHTTP: 6d8ca031a9ce613a01e8f18b497503887b0b50c0
+
+COCOAPODS: 0.38.2

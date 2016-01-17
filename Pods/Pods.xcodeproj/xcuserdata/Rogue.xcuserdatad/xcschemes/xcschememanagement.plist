@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>DateTools.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>JSQMessagesViewController.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>JSQSystemSoundPlayer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SwiftHTTP.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>144194827FD0D1DBBB63F26F4FEB97D3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3CBB40A6B798BD3317B75C62F16B7E4A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>777E23374B716F2A6D8F70474B93D46F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AB33B84630B10DE253DA6B29E233F61D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CB541C4CD6A29FBF0F73131F94EE1627</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>
