@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class LoginViewController: UIViewController, UITextFieldDelegate {
+class LoginViewController: UIViewController, UITextFieldDelegate, UIPopoverPresentationControllerDelegate {
     
     @IBOutlet weak var emailTextField: UITextField!
     
@@ -67,6 +67,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "showPopover" {
+            let controller = segue.destinationViewController
+            
+            controller.popoverPresentationController!.delegate = self
+            controller.preferredContentSize = CGSize(width: 320, height: 186)
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -115,7 +124,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         emailTextField.tintColor = .whiteColor()
         passwordTextField.delegate = self
         passwordTextField.tintColor = .whiteColor()
-        loginButton.layer.borderWidth = 2
+        loginButton.layer.borderWidth = 1.5
         loginButton.layer.borderColor = UIColor.whiteColor().CGColor
         loginButton.alpha = 0.9
         emailTextField.attributedPlaceholder = NSAttributedString(string: "email...", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])

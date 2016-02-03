@@ -10,8 +10,9 @@ import UIKit
 import JSQMessagesViewController
 import Foundation
 import SwiftHTTP
+import iAd
 
-class MessageDetailViewController: JSQMessagesViewController {
+class MessageDetailViewController: JSQMessagesViewController, ADBannerViewDelegate {
     
     let messagesManager = MessagesManager()
     
@@ -28,6 +29,8 @@ class MessageDetailViewController: JSQMessagesViewController {
     var _incomingAvatarImage: JSQMessagesAvatarImage? = nil
     
     var isSending = false
+    
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     var incomingAvatarImage: JSQMessagesAvatarImage? {
         get {
@@ -110,6 +113,29 @@ class MessageDetailViewController: JSQMessagesViewController {
         }
     }
     
+    func iAd() {
+        if appDelegate.bannerView != nil {
+            appDelegate.bannerView!.translatesAutoresizingMaskIntoConstraints = false
+            appDelegate.bannerView!.delegate = self
+            appDelegate.bannerView!.hidden = true
+            view.addSubview(appDelegate.bannerView!)
+            
+            let viewsDictionary = ["bannerView": appDelegate.bannerView!]
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bannerView]|", options: [], metrics: nil, views: viewsDictionary))
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-62-[bannerView]", options: [], metrics: nil, views: viewsDictionary))
+        }
+    }
+    
+    func bannerViewDidLoadAd(banner: ADBannerView!) {
+        print("Ad Loaded")
+        appDelegate.bannerView?.hidden = false
+    }
+    
+    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+        print("Ad did not load, \(error)")
+        appDelegate.bannerView?.hidden = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -128,12 +154,18 @@ class MessageDetailViewController: JSQMessagesViewController {
         self.collectionView?.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 44/255, alpha: 1)
         
         load()
+        iAd()
         
         self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("reload"), userInfo: nil, repeats: true)
     }
     
+    override func viewWillAppear(animated: Bool) {
+        appDelegate.bannerView?.hidden = false
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         self.timer?.invalidate()
+        appDelegate.bannerView?.hidden = true
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {

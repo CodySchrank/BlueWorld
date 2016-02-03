@@ -12,7 +12,6 @@ class FriendViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     @IBOutlet weak var menuButton: UIBarButtonItem!
     
-    
     @IBOutlet weak var tableView: NewMessageView!
     
     @IBOutlet weak var sortTextField: UITextField!
@@ -29,13 +28,14 @@ class FriendViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.navigationController?.navigationBar.barStyle = .Black
         self.navigationController?.navigationBar.tintColor = .whiteColor()
         
+        self.navigationController?.navigationBar.barTintColor = UIColor(red: 48/255, green: 62/255, blue: 80/255, alpha: 1)
+        self.navigationController?.navigationBar.backgroundColor = UIColor(red: 48/255, green: 62/255, blue: 80/255, alpha: 1)
+        
         tableView.delegate = self
         tableView.dataSource = self
         sortTextField.delegate = self
         
         sortTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: UIControlEvents.EditingChanged)
-        
-        sortTextField.returnKeyType = .Go
         
         tableView.separatorColor = UIColor(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.7)
         tableView.tableFooterView = UIView(frame: CGRectZero)
@@ -70,10 +70,7 @@ class FriendViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        if textField.text != "" && textField.text != nil {
-            loadMessageDetail(textField.text!)
-        }
+        self.resignFirstResponder()
         return true;
     }
     

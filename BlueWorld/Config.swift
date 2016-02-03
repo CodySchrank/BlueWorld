@@ -8,7 +8,7 @@
 
 import Foundation
 
-let debugging = true
+let debugging = false
 
 class Config {
     static func debug(information: AnyObject) {

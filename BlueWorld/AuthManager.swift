@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftHTTP
+import CoreData
 
 class AuthManager {
 
@@ -19,12 +20,15 @@ class AuthManager {
         }
     }
     
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    
     func GetCredentials(callback: () -> Void) {
         Config.debug("Starting Auth")
         
         /** Ghetto trick to make sure the response isn't cached **/
         self.logout() {
             do {
+                
                 let parameters = [
                     "params" : "\(Network.paramString)",
                     "j_username" : User.email,
@@ -49,8 +53,9 @@ class AuthManager {
                         self.LogIn(callback)
                     }
                 }
-            } catch let error {
-                print(error)
+            } catch let e {
+                print(e)
+                //                NSNotificationCenter.defaultCenter().postNotificationName(Tools.ErrorNotification,object:nil,userInfo:["message": e])
             }
         }
     }
@@ -74,9 +79,6 @@ class AuthManager {
                     Config.debug(response.error!)
                 } else {
                     Config.debug("Logged In")
-                    
-//                    print(response.description)
-//                    print(response.headers)
                     
                     let urlQuery = response.URL!.query!
                     let myRegex = "code%3D"
@@ -298,8 +300,7 @@ class AuthManager {
         if let timestamp = User.access_token_timestap {
             let diff = currentTime.timeIntervalSinceDate(timestamp)
             
-            if diff > 10000 {
-                //Tokens probably expired
+            if diff > 7200 {
                 let auth = AuthManager(email: nil, password: nil)
                 auth.GetCredentials() {
                     callback()

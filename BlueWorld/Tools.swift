@@ -11,6 +11,14 @@ import UIKit
 import DateTools
 
 class Tools {
+    static var ads = false
+    
+    static var ErrorNotification = "com.BlueWorld.ErrorNotication"
+    
+    static func postError(error: String) {
+        NSNotificationCenter.defaultCenter().postNotificationName(ErrorNotification, object: nil, userInfo: ["error":error])
+    }
+    
     static func startLoad(view: UIView, spinner: UIActivityIndicatorView) {
         spinner.center = view.center
         spinner.startAnimating()

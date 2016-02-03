@@ -50,8 +50,6 @@ class SettingsTableViewController: UITableViewController {
         let url = databaseURL()
         let stylesheet = NSDictionary(contentsOfURL:url!)
         
-        print(stylesheet)
-        
         let autoLogin = stylesheet!["AutoLogin"] as! Bool
         
         autoLoginSwitch.setOn(autoLogin, animated: true)

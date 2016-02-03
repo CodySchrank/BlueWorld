@@ -25,14 +25,29 @@ public class Network {
         userAgent = "Mozilla/5.0 (Linux; U; Android 4.3; \(Options.npLanguage); C6502 Build/10.4.1.B.0.101) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 PlayStation App/2.55.8/\(Options.npLanguage)/\(Options.npLanguage)",
         requestedWith = "com.scee.psxandroid"
     
-    static var PSNHeaders = [
-//        "Access-Control-Request-Method": "GET",
-        "Origin": "http://psapp.dl.playstation.net",
-        "Access-Control-Request-Headers": "Origin, Accept-Language, Authorization, Content-Type, Cache-Control",
-        "Accept-Language": Options.npLanguage,
-        "Authorization": "Bearer \(User.access_token)",
-        "Cache-Control": "no-cache",
-        "X-Requested-With": "\(Network.requestedWith)",
-        "User-Agent": "\(Network.userAgent)"
-    ]
+//    static var PSNHeaders = [
+//        "Origin": "http://psapp.dl.playstation.net",
+//        "Access-Control-Request-Headers": "Origin, Accept-Language, Authorization, Content-Type, Cache-Control",
+//        "Accept-Language": Options.npLanguage,
+//        "Authorization": "Bearer \(User.access_token)",
+//        "Cache-Control": "no-cache",
+//        "X-Requested-With": "\(Network.requestedWith)",
+//        "User-Agent": "\(Network.userAgent)"
+//    ]
+    
+    static var PSNHeaders: [String: String] {
+        get {
+            _PSNHeaders["Authorization"] = "Bearer \(User.access_token)"
+            return _PSNHeaders
+        }
+    }
+    
+    static private var _PSNHeaders = [
+            "Origin": "http://psapp.dl.playstation.net",
+            "Access-Control-Request-Headers": "Origin, Accept-Language, Authorization, Content-Type, Cache-Control",
+            "Accept-Language": Options.npLanguage,
+            "Cache-Control": "no-cache",
+            "X-Requested-With": "\(Network.requestedWith)",
+            "User-Agent": "\(Network.userAgent)"
+        ]
 }

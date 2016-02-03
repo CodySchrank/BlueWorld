@@ -26,6 +26,9 @@ class NewMessageViewController: UIViewController, UITableViewDelegate, UITableVi
         self.navigationController?.navigationBar.barStyle = .Black
         self.navigationController?.navigationBar.tintColor = .whiteColor()
         
+        self.navigationController?.navigationBar.barTintColor = UIColor(red: 48/255, green: 62/255, blue: 80/255, alpha: 1)
+        self.navigationController?.navigationBar.backgroundColor = UIColor(red: 48/255, green: 62/255, blue: 80/255, alpha: 1)
+        
         tableView.delegate = self
         tableView.dataSource = self
         sortTextField.delegate = self

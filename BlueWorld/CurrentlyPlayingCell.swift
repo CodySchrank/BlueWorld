@@ -74,8 +74,11 @@ class CurrentlyPlayingCell: UITableViewCell {
                         trophyTotalLabel.text = "\(CurrentTrophies.currentGameEarnedTrophiesTotal)/\(CurrentTrophies.currentGameDefinedTrophiesTotal)"
                         
                         
-                        /** DONT LIKE HOW THE TROPHY TOTAL LABEL LOOKS SO IM HIDING IT FOR NOW**/
+                        /** DONT LIKE HOW THE TROPHY STUFF LOOKS SO IM HIDING IT FOR NOW**/
                         trophyTotalLabel.alpha = 0
+                        trophyProgressCircle.alpha = 0
+                        initialCircle.alpha = 0
+                        trophyProgressLabel.alpha = 0
                         
                         self.currentGameImage.addSubview(view)
                         self.currentGameImage.addSubview(gameTitle)

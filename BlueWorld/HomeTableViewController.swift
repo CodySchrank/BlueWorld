@@ -10,13 +10,13 @@ import UIKit
 import Foundation
 import iAd
 
-class HomeTableViewController: UITableViewController, ADBannerViewDelegate {
+class HomeTableViewController: UIViewController, ADBannerViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var menuButton: UIBarButtonItem!
     
     var status = ""
     
-    var bannerView: ADBannerView!
+    @IBOutlet weak var tableView: UITableView!
     
     let menuItems = ["Friends Online","New Messages"]
     
@@ -24,22 +24,21 @@ class HomeTableViewController: UITableViewController, ADBannerViewDelegate {
     
     let messageManager = MessagesManager()
     
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    
     let trophyManager = TrophyManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.delegate = self
+        tableView.dataSource = self
+
+        iAd()
+        
+        setErrorObserver()
+        
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        
-        bannerView = ADBannerView(adType: .Banner)
-        bannerView.translatesAutoresizingMaskIntoConstraints = false
-        bannerView.delegate = self
-        bannerView.hidden = true
-        view.addSubview(bannerView)
-        
-        let viewsDictionary = ["bannerView": bannerView]
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bannerView]|", options: [], metrics: nil, views: viewsDictionary))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[bannerView]|", options: [], metrics: nil, views: viewsDictionary))
         
         if self.revealViewController() != nil {
             menuButton.target = self.revealViewController()
@@ -48,29 +47,74 @@ class HomeTableViewController: UITableViewController, ADBannerViewDelegate {
         }
     }
     
+    func setErrorObserver() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "ErrorPresentation:", name: Tools.ErrorNotification, object: nil)
+    }
+    
+    func ErrorPresentation(notification: NSNotification) {
+        let userInfo = notification.userInfo as! Dictionary<String,String!>
+        let messageString = userInfo["error"]
+        
+        let alert = UIAlertController(title: "Network Error", message: messageString, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         load()
+
+        appDelegate.bannerView?.hidden = false
         
         self.revealViewController().view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         self.revealViewController().frontViewController.revealViewController().tapGestureRecognizer()
     }
     
+    func iAd() {
+        if appDelegate.bannerView != nil {
+            appDelegate.bannerView!.translatesAutoresizingMaskIntoConstraints = false
+            appDelegate.bannerView!.delegate = self
+            appDelegate.bannerView!.hidden = true
+            view.addSubview(appDelegate.bannerView!)
+            
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            
+            let viewsDictionary = ["bannerView": appDelegate.bannerView!]
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bannerView]|", options: [], metrics: nil, views: viewsDictionary))
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[bannerView]|", options: [], metrics: nil, views: viewsDictionary))
+        }
+    }
+    
+    func bannerViewDidLoadAd(banner: ADBannerView!) {
+        print("Ad Loaded")
+        appDelegate.bannerView?.hidden = false
+    }
+    
+    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+        print("Ad did not load, \(error)")
+        appDelegate.bannerView?.hidden = true
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+
+        appDelegate.bannerView?.hidden = true
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
         
         self.revealViewController().frontViewController.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         self.revealViewController().frontViewController.view.userInteractionEnabled = true
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2 + self.menuItems.count + (Bool(User.FriendsOnline.count) ? User.FriendsOnline.count : 1) + (Bool(MessageGroup.UnreadGroup.count) ? MessageGroup.UnreadGroup.count : 1)
     }
     
     var friendCount = 1
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         switch indexPath.row {
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier("WelcomeCell", forIndexPath: indexPath) as!WelcomeCell
@@ -98,8 +142,8 @@ class HomeTableViewController: UITableViewController, ADBannerViewDelegate {
             return cell
         case 4 + friendCount..<(4 + friendCount + MessageGroup.UnreadGroup.count) where MessageGroup.UnreadGroup.count != 0:
             let cell = tableView.dequeueReusableCellWithIdentifier("MessageCell", forIndexPath: indexPath) as! MessageCell
-            var group = MessageGroup.UnreadGroup[indexPath.row - (4 + friendCount)]
-            cell.initCell(&group)
+            let group = MessageGroup.UnreadGroup[indexPath.row - (4 + friendCount)]
+            cell.initCell(group)
             return cell
         case 4 + friendCount where MessageGroup.UnreadGroup.count == 0:
             let cell = tableView.dequeueReusableCellWithIdentifier("NoCell",forIndexPath: indexPath) as! NoCell
@@ -112,11 +156,11 @@ class HomeTableViewController: UITableViewController, ADBannerViewDelegate {
         }
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
     
-    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         switch indexPath.row {
         case 1:
             return 200
@@ -125,7 +169,7 @@ class HomeTableViewController: UITableViewController, ADBannerViewDelegate {
         }
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let cell = tableView.cellForRowAtIndexPath(indexPath)
         if cell is FriendCell {
             let typedCell = cell as! FriendCell
@@ -210,16 +254,6 @@ class HomeTableViewController: UITableViewController, ADBannerViewDelegate {
                 }
             }
         }
-    }
-    
-    func bannerViewDidLoadAd(banner: ADBannerView!) {
-        print("Ad Loaded")
-        bannerView.hidden = false
-    }
-    
-    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
-        print("Ad did not load")
-        bannerView.hidden = true
     }
 }
 

@@ -7,9 +7,12 @@
 //
 
 import UIKit
+import iAd
 
-class ProfileViewController: UITableViewController {
+class ProfileViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ADBannerViewDelegate {
     @IBOutlet weak var menuButton: UIBarButtonItem!
+    
+    @IBOutlet weak var tableView: UITableView!
     
     let menuItems = ["Trophies","Recent Activity"]
     
@@ -18,6 +21,8 @@ class ProfileViewController: UITableViewController {
     
     var showingAllTrophies = false
     var recentActivityOffset = 0
+    
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     var friend = ""
     var friendTrophies = [Trophy]()
@@ -28,6 +33,11 @@ class ProfileViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        iAd()
+
         if friend == "" {
             trophyManager.getAllTrophies() {
                 dispatch_async(dispatch_get_main_queue()) {
@@ -82,6 +92,8 @@ class ProfileViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        appDelegate.bannerView?.hidden = false
+        
         if self.revealViewController() != nil {
             self.revealViewController().view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
             self.revealViewController().frontViewController.revealViewController().tapGestureRecognizer()
@@ -91,24 +103,25 @@ class ProfileViewController: UITableViewController {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
+        appDelegate.bannerView?.hidden = true
+        
         if self.revealViewController() != nil {
             self.revealViewController().frontViewController.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
             self.revealViewController().frontViewController.view.userInteractionEnabled = true
         }
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3 + menuItems.count + self.trophiesBeingShown.count + self.activitiesBeingShown.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         switch indexPath.row {
         case 0:
             let cell = tableView.dequeueReusableCellWithIdentifier("profileCell", forIndexPath: indexPath) as! ProfileCell
             if friend != "" {
                 for f in User.Friends {
                     if f.onlineId == self.friend {
-                        print(f)
                         cell.initCell(f)
                     }
                 }
@@ -145,7 +158,7 @@ class ProfileViewController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.row == 2 + self.trophiesBeingShown.count {
             showingAllTrophies ? (self.showingAllTrophies = false) : (self.showingAllTrophies = true)
             (self.friend == "") ? self.load() : self.friendLoad()
@@ -204,5 +217,31 @@ class ProfileViewController: UITableViewController {
                 self.trophiesBeingShown.append(trophy)
             }
         }
+    }
+    
+    func iAd() {
+        if appDelegate.bannerView != nil {
+            appDelegate.bannerView!.translatesAutoresizingMaskIntoConstraints = false
+            appDelegate.bannerView!.delegate = self
+            appDelegate.bannerView!.hidden = true
+            view.addSubview(appDelegate.bannerView!)
+            
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            
+            let viewsDictionary = ["bannerView": appDelegate.bannerView!]
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bannerView]|", options: [], metrics: nil, views: viewsDictionary))
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[bannerView]|", options: [], metrics: nil, views: viewsDictionary))
+        }
+    }
+    
+    func bannerViewDidLoadAd(banner: ADBannerView!) {
+        print("Ad Loaded")
+        appDelegate.bannerView?.hidden = false
+    }
+    
+    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+        print("Ad did not load, \(error)")
+        appDelegate.bannerView?.hidden = true
     }
 }

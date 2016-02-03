@@ -80,7 +80,7 @@ class MessagesTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("MessageCell", forIndexPath: indexPath) as! MessageCell
-        cell.initCell(&MessageGroup.Group[indexPath.row])
+        cell.initCell(MessageGroup.Group[indexPath.row])
         if MessageGroup.Group[indexPath.row].seenFlag == false {
             cell.backgroundColor = .grayColor()
         } else {

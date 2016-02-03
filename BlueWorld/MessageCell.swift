@@ -18,7 +18,7 @@ class MessageCell: UITableViewCell {
     
     @IBOutlet weak var dateLabel: UILabel!
     
-    func initCell(inout messageGroup: MessageGroup) {
+    func initCell(messageGroup: MessageGroup) {
         
         //MARK: Avatar
         let profileManager = ProfileManager()
@@ -30,6 +30,7 @@ class MessageCell: UITableViewCell {
         if avatarImageView.image != messageGroup.avatar {
             avatarImageView.image = messageGroup.avatar
         }
+        
         if messageGroup.avatar == nil {
             profileManager.getAvatar(messageGroup.membersExcludingTheUser[0]) {
                 avatar in
@@ -43,7 +44,15 @@ class MessageCell: UITableViewCell {
         }
         
         //MARK: Labels
-        nameLabel.text = messageGroup.membersExcludingTheUser[0]
+        var ish = ""
+        for member in messageGroup.membersExcludingTheUser {
+            ish += "\(member), "
+        }
+        if ish != "" {
+            let name1 = ish.substringToIndex(ish.endIndex.predecessor())
+            let name2 = name1.substringToIndex(name1.endIndex.predecessor())
+            nameLabel.text = name2
+        }
         bodyLabel.text = messageGroup.latestMessageBody
         dateLabel.text = messageGroup.lastUpdated
     }
