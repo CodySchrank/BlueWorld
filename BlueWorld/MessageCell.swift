@@ -31,6 +31,8 @@ class MessageCell: UITableViewCell {
             avatarImageView.image = messageGroup.avatar
         }
         
+        //bug?
+        
         if messageGroup.avatar == nil {
             profileManager.getAvatar(messageGroup.membersExcludingTheUser[0]) {
                 avatar in

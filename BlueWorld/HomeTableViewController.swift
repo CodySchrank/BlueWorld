@@ -42,13 +42,13 @@ class HomeTableViewController: UIViewController, ADBannerViewDelegate, UITableVi
         
         if self.revealViewController() != nil {
             menuButton.target = self.revealViewController()
-            menuButton.action = "revealToggle:"
+            menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
             self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         }
     }
     
     func setErrorObserver() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "ErrorPresentation:", name: Tools.ErrorNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeTableViewController.ErrorPresentation(_:)), name: Tools.ErrorNotification, object: nil)
     }
     
     func ErrorPresentation(notification: NSNotification) {

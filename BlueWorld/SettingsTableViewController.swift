@@ -45,7 +45,7 @@ class SettingsTableViewController: UITableViewController {
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
-        autoLoginSwitch.addTarget(self, action: Selector("stateChanged:"), forControlEvents: UIControlEvents.ValueChanged)
+        autoLoginSwitch.addTarget(self, action: #selector(SettingsTableViewController.stateChanged(_:)), forControlEvents: UIControlEvents.ValueChanged)
         
         let url = databaseURL()
         let stylesheet = NSDictionary(contentsOfURL:url!)
@@ -56,7 +56,7 @@ class SettingsTableViewController: UITableViewController {
         
         if self.revealViewController() != nil {
             menuButton.target = self.revealViewController()
-            menuButton.action = "revealToggle:"
+            menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
             self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         }
     }

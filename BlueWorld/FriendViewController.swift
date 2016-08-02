@@ -35,7 +35,7 @@ class FriendViewController: UIViewController, UITableViewDelegate, UITableViewDa
         tableView.dataSource = self
         sortTextField.delegate = self
         
-        sortTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: UIControlEvents.EditingChanged)
+        sortTextField.addTarget(self, action: #selector(FriendViewController.textFieldDidChange(_:)), forControlEvents: UIControlEvents.EditingChanged)
         
         tableView.separatorColor = UIColor(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.7)
         tableView.tableFooterView = UIView(frame: CGRectZero)
@@ -43,7 +43,7 @@ class FriendViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         if self.revealViewController() != nil {
             menuButton.target = self.revealViewController()
-            menuButton.action = "revealToggle:"
+            menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
             self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         }
         

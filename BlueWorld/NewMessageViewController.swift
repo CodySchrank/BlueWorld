@@ -33,7 +33,7 @@ class NewMessageViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.dataSource = self
         sortTextField.delegate = self
         
-        sortTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: UIControlEvents.EditingChanged)
+        sortTextField.addTarget(self, action: #selector(NewMessageViewController.textFieldDidChange(_:)), forControlEvents: UIControlEvents.EditingChanged)
         
         sortTextField.returnKeyType = .Go
         

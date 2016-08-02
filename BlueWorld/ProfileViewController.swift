@@ -84,7 +84,7 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
         
         if self.revealViewController() != nil {
             menuButton.target = self.revealViewController()
-            menuButton.action = "revealToggle:"
+            menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
             self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         }
     }
@@ -165,7 +165,7 @@ class ProfileViewController: UIViewController, UITableViewDataSource, UITableVie
             self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Automatic)
         }
         if indexPath.row == 4 + self.trophiesBeingShown.count + self.activitiesBeingShown.count {
-            recentActivityOffset++
+            recentActivityOffset += 1;
             if self.friend == "" {
                 profileManager.getFeed(recentActivityOffset) {
                     dispatch_async(dispatch_get_main_queue()) {

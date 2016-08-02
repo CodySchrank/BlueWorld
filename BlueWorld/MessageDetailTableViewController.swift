@@ -156,7 +156,7 @@ class MessageDetailViewController: JSQMessagesViewController, ADBannerViewDelega
         load()
         iAd()
         
-        self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("reload"), userInfo: nil, repeats: true)
+        self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(MessageDetailViewController.reload), userInfo: nil, repeats: true)
     }
     
     override func viewWillAppear(animated: Bool) {

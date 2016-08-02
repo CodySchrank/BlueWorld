@@ -106,7 +106,8 @@ extension String {
             print("end index \(end) out of bounds")
             return ""
         }
-        let range = Range(start: self.startIndex.advancedBy(start), end: self.startIndex.advancedBy(end))
+    
+        let range = self.startIndex.advancedBy(start) ..< self.startIndex.advancedBy(end)
         return self.substringWithRange(range)
     }
 }

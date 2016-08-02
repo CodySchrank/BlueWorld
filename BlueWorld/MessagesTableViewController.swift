@@ -29,7 +29,7 @@ class MessagesTableViewController: UITableViewController {
         
         if self.revealViewController() != nil {
             menuButton.target = self.revealViewController()
-            menuButton.action = "revealToggle:"
+            menuButton.action = #selector(SWRevealViewController.revealToggle(_:))
             self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         }
     }
@@ -39,7 +39,7 @@ class MessagesTableViewController: UITableViewController {
         
         load()
         
-        self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("reload"), userInfo: nil, repeats: true)
+        self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(MessagesTableViewController.reload), userInfo: nil, repeats: true)
         
         self.revealViewController().view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         self.revealViewController().frontViewController.revealViewController().tapGestureRecognizer()
